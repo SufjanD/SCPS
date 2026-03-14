@@ -3,7 +3,6 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
-const path = require('path');
 
 const { initDB } = require('./db');
 const { startSimulator } = require('./simulator');
@@ -39,10 +38,6 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
-
-// Serve frontend build
-const frontendPath = path.join(__dirname, '../client/dist');
-app.use(express.static(frontendPath));
 
 // API Routes
 app.use('/api/auth', authRoutes);
@@ -90,11 +85,6 @@ app.post('/api/sensor', (req, res) => {
   res.json({ success: true });
 });
 
-// Catch-all: serve React app
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'index.html'));
-});
-
 // Socket.io auth
 io.use((socket, next) => {
   const token = socket.handshake.auth?.token;
@@ -110,22 +100,22 @@ io.use((socket, next) => {
 });
 
 io.on('connection', (socket) => {
-  console.log(`📱 Client connected: ${socket.user?.email}`);
-  socket.on('disconnect', () => console.log(`📴 Client disconnected: ${socket.user?.email}`));
+  console.log(`Client connected: ${socket.user?.email}`);
+  socket.on('disconnect', () => console.log(`Client disconnected: ${socket.user?.email}`));
 });
 
 async function main() {
   await initDB();
-  console.log('✅ Database ready');
+  console.log('Database ready');
 
   server.listen(PORT, () => {
-    console.log(`\n🚗 Smart Campus Parking System`);
-    console.log(`📡 Server running at: http://localhost:${PORT}`);
-    console.log(`\n📝 Demo accounts (password: demo123):`);
+    console.log(`\nSmart Campus Parking System`);
+    console.log(`Server running at: http://localhost:${PORT}`);
+    console.log(`\nDemo accounts (password: demo123):`);
     console.log(`   Student:    student@uni.edu`);
     console.log(`   Security:   security@uni.edu`);
     console.log(`   Management: admin@uni.edu`);
-    console.log(`\n🔧 Starting sensor simulator...`);
+    console.log(`\nStarting sensor simulator...`);
     startSimulator(io);
   });
 }
