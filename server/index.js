@@ -23,19 +23,8 @@ const io = new Server(server, {
 const PORT = process.env.PORT || 3001;
 
 app.use(cors({
-  origin: function(origin, callback) {
-    const allowed = [
-      process.env.FRONTEND_URL,
-      'http://localhost:5173',
-      'http://localhost:3001',
-    ].filter(Boolean);
-    if (!origin || allowed.some(a => origin.startsWith(a))) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
+  origin: '*',
+  credentials: false
 }));
 app.use(express.json());
 
