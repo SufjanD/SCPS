@@ -1,0 +1,9 @@
+node_modules/
+server/node_modules/
+client/node_modules/
+server/scps.db
+.env
+*.log
+client/dist/
+.DS_Store
+Thumbs.db
